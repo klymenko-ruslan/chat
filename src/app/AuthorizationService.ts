@@ -9,8 +9,9 @@ export class AuthorizationService implements CanActivate {
 
   constructor(private router: Router) {}
 
-  login(token: string, username: string) {
+  login(token: string, username: string, userId) {
     localStorage.setItem(AuthorizationService.authTokenKey, token);
+    localStorage.setItem('userId', userId);
     localStorage.setItem('username', username);
     this.router.navigateByUrl('/chat');
   }

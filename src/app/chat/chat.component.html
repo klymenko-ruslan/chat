@@ -1,16 +1,20 @@
-<p *ngFor="let item of messages['main']">
-  {{item[0]}}: {{item[1]}}
+<div>
+  <input [(ngModel)]="message" />
+  <button (click)="sendCommonMessage()">Send message</button>
+</div>
+<p *ngFor="let item of messages[broadcastId]">
+  {{item['Time'] | date: 'dd/MM/yyyy HH:mm:ss'}} {{item['FromUsername']}}: {{item['Text']}}
 </p>
 
 <ng-chat [adapter]="adapter" [userId]="userId"></ng-chat>
-
-<div *ngFor="let key of utilsService.getKeysExclude(messages, ['main'])">
+<!-- 
+<div *ngFor="let key of utilsService.getKeysExclude(messages, [broadcastId])">
 
   <p *ngFor="let item of messages[key]">
     {{item[0]}}: {{item[1]}}
   </p>
 
-</div>
+</div> -->
 <div>
   <button (click)="logout()">Logout</button>
 </div>

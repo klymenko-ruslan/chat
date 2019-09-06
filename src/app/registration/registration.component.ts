@@ -22,7 +22,7 @@ export class RegistrationComponent implements OnInit {
   register() {
     this.entityHttpService.register({'username': this.username, 'password': this.password, 'isMale': this.isMale}).subscribe(response => {
       if (response['token']) {
-        this.authorizationService.login(response['token'], this.username);
+        this.authorizationService.login(response['Token'], this.username, response['UserId']);
       }
     });
   }
