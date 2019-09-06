@@ -1,0 +1,14 @@
+<p>
+  <input type="text" [(ngModel)]="nickname"> <br />
+  <label for="male">
+    Male:
+    <input type="radio" id="male" [value]="true" [(ngModel)]="male">
+  </label>
+  <label for="female">
+    Female:
+    <input type="radio" id="female" [value]="false" [(ngModel)]="male">
+  </label>
+  <br />
+  <input type="password" [(ngModel)]="password"> <br />
+  <button (click)="register()">Register</button>
+</p>

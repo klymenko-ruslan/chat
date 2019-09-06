@@ -1,0 +1,13 @@
+<p *ngFor="let item of messages['main']">
+  {{item[0]}}: {{item[1]}}
+</p>
+
+<ng-chat [adapter]="adapter" [userId]="userId"></ng-chat>
+
+<div *ngFor="let key of utilsService.getKeysExclude(messages, ['main'])">
+
+  <p *ngFor="let item of messages[key]">
+    {{item[0]}}: {{item[1]}}
+  </p>
+
+</div>
