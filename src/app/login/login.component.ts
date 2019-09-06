@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import {EntityHttpService} from '../http-service';
+import {AuthorizationService} from '../AuthorizationService';
+import {NotificationsService} from 'angular2-notifications';
 
 @Component({
   selector: 'app-login',
@@ -6,17 +9,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginComponent implements OnInit {
 
-  nickname = '';
+  username = '';
   password = '';
 
-  constructor() { }
+  constructor(private entityHttpService: EntityHttpService,
+              private authorizationService: AuthorizationService,
+              private notificationService: NotificationsService) { }
 
   ngOnInit() {
   }
 
   login() {
-    alert(this.nickname);
-    alert(this.password);
+    this.entityHttpService.login({'username': this.username, 'password': this.password}).subscribe(response => {
+      if (response) {
+        this.authorizationService.login(response['token'], this.username);
+      } else {
+        this.notificationService.error('Authorization failed', 'Wrong username/password pair');
+      }
+    });
   }
 
 }

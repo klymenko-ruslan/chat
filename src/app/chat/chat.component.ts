@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {UtilsService} from '../utils.service';
 import {ChatAdapter} from 'ng-chat';
 import {MyAdapter} from './chat.adaper';
+import {AuthorizationService} from '../AuthorizationService';
 
 @Component({
   selector: 'app-chat',
@@ -15,7 +16,7 @@ export class ChatComponent implements OnInit {
 
   messages = {};
 
-  constructor(public utilsService: UtilsService) { }
+  constructor(public utilsService: UtilsService, private authorizationService: AuthorizationService) { }
 
   ngOnInit() {
     this.messages['main'] = [['Mike', 'main1'], ['Angela', 'main2']];
@@ -24,4 +25,7 @@ export class ChatComponent implements OnInit {
     //this.adapter.
   }
 
+  logout() {
+    this.authorizationService.logout();
+  }
 }

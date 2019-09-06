@@ -9,12 +9,17 @@ import { RegistrationComponent } from './registration/registration.component';
 import { ChatComponent } from './chat/chat.component';
 import {UtilsService} from './utils.service';
 import {NgChatModule} from 'ng-chat';
+import {HttpClientModule} from '@angular/common/http';
+import {EntityHttpService} from './http-service';
+import {AuthorizationService} from './AuthorizationService';
+import {SimpleNotificationsModule} from 'angular2-notifications';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent},
   { path: 'registration', component: RegistrationComponent},
-  { path: 'chat', component: ChatComponent},
-  { path: '**', component: ChatComponent}
+  { path: 'chat', component: ChatComponent, canActivate: [AuthorizationService]},
+  { path: '**', component: ChatComponent, canActivate: [AuthorizationService]}
 ];
 @NgModule({
   declarations: [
@@ -27,10 +32,13 @@ const routes: Routes = [
     BrowserModule,
     [RouterModule.forRoot(routes)],
     FormsModule,
-    NgChatModule
+    NgChatModule,
+    HttpClientModule,
+    SimpleNotificationsModule.forRoot(),
+    BrowserAnimationsModule
   ],
   exports: [RouterModule],
-  providers: [UtilsService],
+  providers: [UtilsService, EntityHttpService, AuthorizationService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
