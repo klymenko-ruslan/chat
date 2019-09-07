@@ -21,7 +21,7 @@ export class RegistrationComponent implements OnInit {
 
   register() {
     this.entityHttpService.register({'username': this.username, 'password': this.password, 'isMale': this.isMale}).subscribe(response => {
-      if (response['token']) {
+      if (response['Token']) {
         this.authorizationService.login(response['Token'], this.username, response['UserId']);
       }
     });

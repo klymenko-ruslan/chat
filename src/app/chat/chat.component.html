@@ -6,7 +6,7 @@
   {{item['Time'] | date: 'dd/MM/yyyy HH:mm:ss'}} {{item['FromUsername']}}: {{item['Text']}}
 </p>
 
-<ng-chat [adapter]="adapter" [userId]="userId"></ng-chat>
+<ng-chat *ngIf="inited" [id]="refresher" [adapter]="adapter" [userId]="userId"></ng-chat>
 <!-- 
 <div *ngFor="let key of utilsService.getKeysExclude(messages, [broadcastId])">
 
