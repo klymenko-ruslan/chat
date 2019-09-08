@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {EntityHttpService} from '../http-service';
 import {AuthorizationService} from '../AuthorizationService';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-registration',
@@ -13,7 +14,8 @@ export class RegistrationComponent implements OnInit {
   isMale = true;
 
   constructor(private entityHttpService: EntityHttpService,
-              private authorizationService: AuthorizationService) { }
+              private authorizationService: AuthorizationService,
+              private router: Router) { }
 
   ngOnInit() {
   }
@@ -22,7 +24,8 @@ export class RegistrationComponent implements OnInit {
   register() {
     this.entityHttpService.register({'username': this.username, 'password': this.password, 'isMale': this.isMale}).subscribe(response => {
       if (response['Token']) {
-        this.authorizationService.login(response['Token'], this.username, response['UserId']);
+        this.router.navigate(['/login']);
+        //this.authorizationService.login(response['Token'], this.username, response['UserId']);
       }
     });
   }

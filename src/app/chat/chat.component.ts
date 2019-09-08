@@ -23,12 +23,12 @@ export class ChatComponent implements OnInit {
   userId = +localStorage.getItem('userId');
 
   public adapter: MyAdapter;
- 
+
   activeUsers = []
 
   convertedActiveUsersList = []
 
-  messages = {1: [{'FromUsername': 'Ruslan', 'Time': new Date(), 'Text': 'Here we are!'}]};
+  messages = {};
 
   constructor(public utilsService: UtilsService, private authorizationService: AuthorizationService) { }
 
@@ -52,23 +52,23 @@ export class ChatComponent implements OnInit {
         this.removeUser(currentMessage['DisconnectedUserId']);
       } else {
         if(currentMessage['To'] != this.broadcastId) {
-          this.receivePrivateMessage(currentMessage)
+          this.receivePrivateMessage(currentMessage);
         } else {
           this.receiveBroadcastMessage(currentMessage, event);
-        }        
+        }
       }
     };
   }
 
   openActiveUserChats(username) {
-    this.activeUsers.forEach(it => {
-      if(document.querySelectorAll('[title="' + username + '"]').length < 2) {
-        (document.querySelectorAll('[title="' + username + '"]')[0]  as HTMLElement).click();
-      }
-    });
+    // this.activeUsers.forEach(it => {
+    //   if(document.querySelectorAll('[title="' + username + '"]').length < 2) {
+    //     (document.querySelectorAll('[title="' + username + '"]')[0]  as HTMLElement).click();
+    //   }
+    // });
   }
 
-  receivePrivateMessage(currentMessage) {  
+  receivePrivateMessage(currentMessage) {
     const privateMessage = new Message();
     privateMessage.fromId = currentMessage['From'];
     privateMessage.toId = currentMessage['To'];
@@ -107,7 +107,7 @@ export class ChatComponent implements OnInit {
 
   setUpActiveUsers(currentMessage) {
     this.convertedActiveUsersList = currentMessage['activeUsers'].filter(it => it.Id != +localStorage.getItem('userId'))
-                .map(it => {          
+                .map(it => {
           return {
           participantType: ChatParticipantType.User,
           id: it.Id,
@@ -122,6 +122,7 @@ export class ChatComponent implements OnInit {
   }
 
   sendCommonMessage() {
+    alert(JSON.stringify({'token': localStorage.getItem(AuthorizationService.authTokenKey), 'from': +localStorage.getItem('userId'), 'to': this.broadcastId, 'text': this.message, 'time': new Date().getTime()}));
     this.ws.send(JSON.stringify({'token': localStorage.getItem(AuthorizationService.authTokenKey), 'from': +localStorage.getItem('userId'), 'to': this.broadcastId, 'text': this.message, 'time': new Date().getTime()}));
   }
 }
