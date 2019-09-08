@@ -1,5 +1,6 @@
 import {ChatAdapter, ChatParticipantStatus, ChatParticipantType, IChatParticipant, Message, ParticipantResponse} from 'ng-chat';
 import {Observable, of} from 'rxjs';
+import {AuthorizationService} from '../AuthorizationService';
 
 export class MyAdapter extends ChatAdapter {
 
@@ -14,15 +15,15 @@ export class MyAdapter extends ChatAdapter {
   }
 
   listFriends(): Observable<ParticipantResponse[]> {
-    return of(this.activeUsers.map(user => {
+   return of(this.activeUsers.map(user => {
       const participantResponse = new ParticipantResponse();
       participantResponse.participant = user;
       return participantResponse;
     }));
   }
 
-  sendMessage(message: Message): void {
-    this.ws.send(JSON.stringify({'from': +localStorage.getItem('userId'), 'to': message.toId, 'text': message.message, 'time': message.dateSent.getTime()}));
+  sendMessage(message: Message) {
+    this.ws.send(JSON.stringify({'token': localStorage.getItem(AuthorizationService.authTokenKey), 'from': +localStorage.getItem('userId'), 'to': message.toId, 'text': message.message, 'time': message.dateSent.getTime()}));
     this.messages.push(message);
   }
 

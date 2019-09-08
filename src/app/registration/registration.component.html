@@ -1,15 +1,19 @@
-<p>
-  <input type="text" [(ngModel)]="username"> <br />
-  <label for="male">
-    Male:
-    <input type="radio" id="male" [value]="true" [(ngModel)]="isMale">
-  </label>
-  <label for="female">
-    Female:
-    <input type="radio" id="female" [value]="false" [(ngModel)]="isMale">
-  </label>
-  <br />
-  <input type="password" [(ngModel)]="password"> <br />
-  <button (click)="register()">Register</button>
-  <button [routerLink]="['/login']">Login</button>
-</p>
+<app-header></app-header>
+<div class="container">
+  <br clear="all" />
+  <form class="hpform">
+    <input type="text" [(ngModel)]="username" placeholder="Username"> <br />
+    <label for="male">
+      Male:
+      <input type="radio" id="male" [value]="true" [(ngModel)]="isMale">
+    </label>
+    <label for="female">
+      Female:
+      <input type="radio" id="female" [value]="false" [(ngModel)]="isMale">
+    </label>
+    <input type="password" onh [(ngModel)]="password" placeholder="Password"> <br />
+    <input type="submit" (click)="register();false" value="Register" />
+    <input type="submit" [routerLink]="['/login']" value="Login" /><br />
+  </form>
+</div>
+<app-footer></app-footer>

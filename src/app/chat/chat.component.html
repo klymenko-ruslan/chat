@@ -1,12 +1,33 @@
+<app-header></app-header>
 <div>
   <input [(ngModel)]="message" />
   <button (click)="sendCommonMessage()">Send message</button>
 </div>
-<p *ngFor="let item of messages[broadcastId]">
-  {{item['Time'] | date: 'dd/MM/yyyy HH:mm:ss'}} {{item['FromUsername']}}: {{item['Text']}}
-</p>
+<div class="common_section" id="testimonials_part">
+  <div class="container">
 
-<ng-chat *ngIf="inited" [id]="refresher" [adapter]="adapter" [userId]="userId"></ng-chat>
+    <ul class="bxslider">
+
+      <li *ngFor="let item of messages[broadcastId]">
+        <div class="testimonial_box">
+          <div class="quote_button"><img src="images/icons/i7.png" alt="" /></div>
+          <div class="para">
+            {{item['Text']}}
+          </div>
+          <div class="clientinfo">
+            <img width="50" height="50" src="assets/images/questionmark.jpg" alt="" />
+            {{item['FromUsername']}} {{item['Time'] | date: 'dd/MM/yyyy HH:mm:ss'}}
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+<!--<p *ngFor="let item of messages[broadcastId]">-->
+  <!--{{item['Time'] | date: 'dd/MM/yyyy HH:mm:ss'}} {{item['FromUsername']}}: {{item['Text']}}-->
+<!--</p>-->
+
+<ng-chat *ngIf="loaded" [pollFriendsList]="true" [adapter]="adapter" [userId]="userId"></ng-chat>
 <!-- 
 <div *ngFor="let key of utilsService.getKeysExclude(messages, [broadcastId])">
 
@@ -15,6 +36,4 @@
   </p>
 
 </div> -->
-<div>
-  <button (click)="logout()">Logout</button>
-</div>
+<app-footer></app-footer>

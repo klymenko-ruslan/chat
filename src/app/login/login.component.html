@@ -1,6 +1,11 @@
-<p>
-  <input type="text" [(ngModel)]="username"> <br />
-  <input type="password" [(ngModel)]="password"> <br />
-  <button (click)="login()">Login</button>
-  <button [routerLink]="['/registration']">Register</button>
-</p>
+<app-header></app-header>
+<div class="container">
+        <br clear="all" />
+        <form class="hpform" >
+          <input class="hpform" type="text" [(ngModel)]="username" placeholder="Username"> <br />
+          <input class="hpform"  type="password" [(ngModel)]="password" placeholder="Password"> <br />
+          <input class="hpform" type="submit" (click)="login();false" value="Login" /><br />
+          <input class="hpform-green" type="submit" [routerLink]="['/registration']" value="Register" />
+        </form>
+</div>
+<app-footer></app-footer>

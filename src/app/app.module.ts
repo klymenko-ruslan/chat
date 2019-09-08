@@ -14,6 +14,8 @@ import {EntityHttpService} from './http-service';
 import {AuthorizationService} from './AuthorizationService';
 import {SimpleNotificationsModule} from 'angular2-notifications';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { HeaderComponent } from './header/header.component';
+import { FooterComponent } from './footer/footer.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent},
@@ -26,7 +28,9 @@ const routes: Routes = [
     AppComponent,
     LoginComponent,
     RegistrationComponent,
-    ChatComponent
+    ChatComponent,
+    HeaderComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,

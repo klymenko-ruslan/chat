@@ -10,7 +10,9 @@ import {ChatAdapter, ChatParticipantStatus, ChatParticipantType, IChatParticipan
 })
 export class ChatComponent implements OnInit {
 
-  refresher = 1
+  loaded = false
+
+  socketAddress = 'ws://localhost:8095/publish-message'
 
   message = ''
 
@@ -21,31 +23,90 @@ export class ChatComponent implements OnInit {
   userId = +localStorage.getItem('userId');
 
   public adapter: MyAdapter;
-  inited = false
-
+ 
   activeUsers = []
 
-  messages = {};
+  convertedActiveUsersList = []
+
+  messages = {1: [{'FromUsername': 'Ruslan', 'Time': new Date(), 'Text': 'Here we are!'}]};
 
   constructor(public utilsService: UtilsService, private authorizationService: AuthorizationService) { }
 
   ngOnInit() {
-    setInterval(()=>{this.refresher++;}, 250);
     this.initWebSocket();
   }
   initWebSocket() {
-    this.ws = new WebSocket('ws://localhost:8095/publish-message');
+    this.ws = new WebSocket(this.socketAddress);
 
     this.ws.onopen = () => {
       this.ws.send(JSON.stringify({'ConnectedUserId': +localStorage.getItem('userId')}));
     };
-    this.ws.onclose = () => {
-      this.ws.send(JSON.stringify({'DisconnectedUserId': +localStorage.getItem('userId')}));
-  };
     this.ws.onmessage = (event) => {
       const currentMessage = JSON.parse(event.data);
       if (currentMessage['activeUsers']) {
-        const convertedUsersList = currentMessage['activeUsers'].filter(it => it.Id != +localStorage.getItem('userId'))
+        this.setUpActiveUsers(currentMessage);
+        this.openActiveUserChats(currentMessage['Username']);
+      } else if (currentMessage['NewActiveUserId']) {
+        this.addActiveUser(currentMessage);
+      } else if (currentMessage['DisconnectedUserId']) {
+        this.removeUser(currentMessage['DisconnectedUserId']);
+      } else {
+        if(currentMessage['To'] != this.broadcastId) {
+          this.receivePrivateMessage(currentMessage)
+        } else {
+          this.receiveBroadcastMessage(currentMessage, event);
+        }        
+      }
+    };
+  }
+
+  openActiveUserChats(username) {
+    this.activeUsers.forEach(it => {
+      if(document.querySelectorAll('[title="' + username + '"]').length < 2) {
+        (document.querySelectorAll('[title="' + username + '"]')[0]  as HTMLElement).click();
+      }
+    });
+  }
+
+  receivePrivateMessage(currentMessage) {  
+    const privateMessage = new Message();
+    privateMessage.fromId = currentMessage['From'];
+    privateMessage.toId = currentMessage['To'];
+    privateMessage.message = currentMessage['Text'];
+    privateMessage.dateSent = new Date(currentMessage['Time']);
+    this.adapter.messages.push(privateMessage);
+  }
+
+  receiveBroadcastMessage(currentMessage, event) {
+    if (!this.messages[currentMessage['To']]) {
+      this.messages[currentMessage['To']] = [];
+    }
+    this.messages[currentMessage['To']].push(JSON.parse(event.data));
+  }
+
+  removeUser(userId) {
+    this.convertedActiveUsersList.forEach((it, indx) => {
+      if(it.id == userId) {
+        this.convertedActiveUsersList.splice(indx, 1);
+      }
+    });
+  }
+
+  addActiveUser(message) {
+    this.convertedActiveUsersList.push(
+      {
+        participantType: ChatParticipantType.User,
+        id: message['NewActiveUserId'],
+        displayName: message['NewActiveUserName'],
+        avatar: 'https://66.media.tumblr.com/avatar_9dd9bb497b75_128.pnj',
+        status: ChatParticipantStatus.Online
+        }
+    );
+    //this.activeUsers.push(activeUserId);
+  }
+
+  setUpActiveUsers(currentMessage) {
+    this.convertedActiveUsersList = currentMessage['activeUsers'].filter(it => it.Id != +localStorage.getItem('userId'))
                 .map(it => {          
           return {
           participantType: ChatParticipantType.User,
@@ -55,38 +116,12 @@ export class ChatComponent implements OnInit {
           status: ChatParticipantStatus.Online
           }
         });
-        this.adapter = new MyAdapter(this.ws, convertedUsersList);
+        this.adapter = new MyAdapter(this.ws, this.convertedActiveUsersList);
         this.activeUsers = currentMessage['activeUsers'];
-        this.inited = true;
-      } else {
-        if(currentMessage['To'] != this.broadcastId) {
-          if(document.querySelectorAll('[title="' + currentMessage['Username'] + '"]').length < 2) {
-
-          }
-          const privateMessage = new Message();
-          privateMessage.fromId = currentMessage['From'];
-          privateMessage.toId = currentMessage['To'];
-          privateMessage.message = currentMessage['Text'];
-          privateMessage.dateSent = new Date(currentMessage['Time']);
-          this.adapter.messages.push(privateMessage);
-        } else {
-          if (!this.messages[currentMessage['To']]) {
-            this.messages[currentMessage['To']] = [];
-          }
-          this.messages[currentMessage['To']].push(JSON.parse(event.data));
-        }        
-      }
-    };
+        this.loaded = true;
   }
 
   sendCommonMessage() {
-    this.ws.send(JSON.stringify({'from': +localStorage.getItem('userId'), 'to': this.broadcastId, 'text': this.message, 'time': new Date().getTime()}));
-  }
-
-  logout() {
-    if (this.ws.readyState === WebSocket.OPEN) {
-      this.ws.close();
-   }
-    this.authorizationService.logout();
+    this.ws.send(JSON.stringify({'token': localStorage.getItem(AuthorizationService.authTokenKey), 'from': +localStorage.getItem('userId'), 'to': this.broadcastId, 'text': this.message, 'time': new Date().getTime()}));
   }
 }

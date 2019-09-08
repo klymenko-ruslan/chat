@@ -11,7 +11,6 @@ export class AuthorizationService implements CanActivate {
 
   login(token: string, username: string, userId) {
     localStorage.setItem(AuthorizationService.authTokenKey, token);
-    alert(userId);
     localStorage.setItem('userId', userId);
     localStorage.setItem('username', username);
     this.router.navigateByUrl('/chat');
