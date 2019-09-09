@@ -1,5 +1,10 @@
 <app-header></app-header>
 <div>
+  <form class="hpform">
+    <input type="submit" (click)="logout()" value="Logout" />
+  </form>
+</div>
+<div>
   <input [(ngModel)]="message" />
   <button (click)="sendCommonMessage()">Send message</button>
 </div>

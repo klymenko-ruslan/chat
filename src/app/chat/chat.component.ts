@@ -39,29 +39,34 @@ export class ChatComponent implements OnInit {
     this.ws = new WebSocket(this.socketAddress);
 
     this.ws.onopen = () => {
-      this.ws.send(JSON.stringify({'ConnectedUserId': +localStorage.getItem('userId')}));
+      this.ws.send(JSON.stringify({'Token': localStorage.getItem(AuthorizationService.authTokenKey), 'ConnectedUserId': +localStorage.getItem('userId')}));
       setInterval(() => {
         this.ws.send(JSON.stringify({'HeartbeatUserId': +localStorage.getItem('userId')}));
       }, 2000);
     };
     this.ws.onmessage = (event) => {
-      const currentMessage = JSON.parse(event.data);
-      if (JSON.stringify(currentMessage).indexOf('activeUsers') != -1) {
-        if  (currentMessage['activeUsers']) {
-          this.setUpActiveUsers(currentMessage);
-        }
-        this.openActiveUserChats(currentMessage['Username']);
-      } else if (currentMessage['NewActiveUserId']) {
-        this.addActiveUser(currentMessage);
-      } else if (currentMessage['DisconnectedUserId']) {
-        this.removeUser(currentMessage['DisconnectedUserId']);
+      if (event.data.indexOf('logout') != -1) {
+        this.authorizationService.logout();
       } else {
-        if(currentMessage['To'] != this.broadcastId) {
-          this.receivePrivateMessage(currentMessage);
+        const currentMessage = JSON.parse(event.data);
+        if (JSON.stringify(currentMessage).indexOf('activeUsers') != -1) {
+          if  (currentMessage['activeUsers']) {
+            this.setUpActiveUsers(currentMessage);
+          }
+          this.openActiveUserChats(currentMessage['Username']);
+        } else if (currentMessage['NewActiveUserId']) {
+          this.addActiveUser(currentMessage);
+        } else if (currentMessage['DisconnectedUserId']) {
+          this.removeUser(currentMessage['DisconnectedUserId']);
         } else {
-          this.receiveBroadcastMessage(currentMessage, event);
+          if(currentMessage['To'] != this.broadcastId) {
+            this.receivePrivateMessage(currentMessage);
+          } else {
+            this.receiveBroadcastMessage(currentMessage, event);
+          }
         }
       }
+
     };
   }
 
@@ -80,9 +85,12 @@ export class ChatComponent implements OnInit {
     privateMessage.message = currentMessage['Text'];
     privateMessage.dateSent = new Date(currentMessage['Time']);
     this.adapter.messages.push(privateMessage);
-    if(document.querySelectorAll('[title="' + currentMessage['From'] + '"]').length < 2) {
-      (document.querySelectorAll('[title="' + currentMessage['From'] + '"]')[0]  as HTMLElement).click();
+    if ((document.querySelectorAll('[title="' + currentMessage['FromUsername'] + '"]').length > 1)) {
+      //todo: generalize for all
+      (document.getElementsByClassName('ng-chat-close primary-text')[0] as HTMLElement).click();
     }
+    (document.querySelectorAll('[title="' + currentMessage['FromUsername'] + '"]')[0] as HTMLElement).click();
+
   }
 
   receiveBroadcastMessage(currentMessage, event) {
@@ -135,5 +143,10 @@ export class ChatComponent implements OnInit {
       this.ws.send(JSON.stringify({'token': localStorage.getItem(AuthorizationService.authTokenKey), 'from': +localStorage.getItem('userId'), 'to': this.broadcastId, 'text': this.message, 'time': new Date().getTime()}));
       this.message = '';
     }
+  }
+
+  logout() {
+    this.ws.close();
+    this.authorizationService.logout();
   }
 }

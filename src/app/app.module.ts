@@ -38,7 +38,7 @@ const routes: Routes = [
     FormsModule,
     NgChatModule,
     HttpClientModule,
-    SimpleNotificationsModule.forRoot(),
+    SimpleNotificationsModule.forRoot({timeOut: 4000, showProgressBar: true}),
     BrowserAnimationsModule
   ],
   exports: [RouterModule],
