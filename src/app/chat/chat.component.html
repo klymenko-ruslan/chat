@@ -5,7 +5,7 @@
   </form>
 </div>
 <div>
-  <input [(ngModel)]="message" />
+  <input (keyup.enter)="sendCommonMessage()" [(ngModel)]="message" />
   <button (click)="sendCommonMessage()">Send message</button>
 </div>
 <div class="common_section" id="testimonials_part" >
@@ -15,7 +15,7 @@
 
       <li *ngFor="let item of messages[broadcastId]?.slice()?.reverse()">
         <div class="testimonial_box">
-          <div class="para">
+          <div>
             {{item['Text']}}
           </div>
           <div class="clientinfo">
