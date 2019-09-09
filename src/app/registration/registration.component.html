@@ -1,8 +1,7 @@
 <app-header></app-header>
 <div class="container">
   <br clear="all" />
-  <form class="hpform">
-    <input type="text" name="username" [(ngModel)]="username" placeholder="Username" /> <br />
+  <div>
     <label for="male">
       Male:
       <input type="radio" name="male" id="male" [value]="true" [(ngModel)]="isMale" />
@@ -11,8 +10,12 @@
       Female:
       <input type="radio" name="female" id="female" [value]="false" [(ngModel)]="isMale" />
     </label>
+  </div>
+  <form class="hpform">
+    <input type="text" name="username" [(ngModel)]="username" placeholder="Username" /> <br />
     <input type="password" name="password" [(ngModel)]="password" placeholder="Password" /> <br />
-    <input type="submit" (click)="register();" value="Register" /><br />
+
+    <input type="submit" style="background-color: rgb(0, 102, 0)" (click)="register();" value="Register" /><br />
     <input type="submit" [routerLink]="['/login']" value="Login" /><br />
   </form>
 </div>

@@ -3,35 +3,24 @@
   <input [(ngModel)]="message" />
   <button (click)="sendCommonMessage()">Send message</button>
 </div>
-<div class="common_section" id="testimonials_part">
-  <div class="container">
+<div class="common_section" id="testimonials_part" >
+  <div class="container" >
 
     <ul class="bxslider">
 
-      <li *ngFor="let item of messages[broadcastId]">
+      <li *ngFor="let item of messages[broadcastId]?.slice()?.reverse()">
         <div class="testimonial_box">
           <div class="para">
             {{item['Text']}}
           </div>
           <div class="clientinfo">
-            {{item['FromUsername']}} {{item['Time'] | date: 'dd/MM/yyyy HH:mm:ss'}}
+            {{item['Time'] | date: 'dd/MM/yyyy HH:mm:ss'}} {{item['FromUsername']}}
           </div>
         </div>
       </li>
     </ul>
   </div>
 </div>
-<!--<p *ngFor="let item of messages[broadcastId]">-->
-  <!--{{item['Time'] | date: 'dd/MM/yyyy HH:mm:ss'}} {{item['FromUsername']}}: {{item['Text']}}-->
-<!--</p>-->
 
 <ng-chat *ngIf="loaded" [pollFriendsList]="true" [adapter]="adapter" [userId]="userId"></ng-chat>
-<!--
-<div *ngFor="let key of utilsService.getKeysExclude(messages, [broadcastId])">
-
-  <p *ngFor="let item of messages[key]">
-    {{item[0]}}: {{item[1]}}
-  </p>
-
-</div> -->
 <app-footer></app-footer>

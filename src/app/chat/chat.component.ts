@@ -40,11 +40,16 @@ export class ChatComponent implements OnInit {
 
     this.ws.onopen = () => {
       this.ws.send(JSON.stringify({'ConnectedUserId': +localStorage.getItem('userId')}));
+      setInterval(() => {
+        this.ws.send(JSON.stringify({'HeartbeatUserId': +localStorage.getItem('userId')}));
+      }, 2000);
     };
     this.ws.onmessage = (event) => {
       const currentMessage = JSON.parse(event.data);
-      if (currentMessage['activeUsers']) {
-        this.setUpActiveUsers(currentMessage);
+      if (JSON.stringify(currentMessage).indexOf('activeUsers') != -1) {
+        if  (currentMessage['activeUsers']) {
+          this.setUpActiveUsers(currentMessage);
+        }
         this.openActiveUserChats(currentMessage['Username']);
       } else if (currentMessage['NewActiveUserId']) {
         this.addActiveUser(currentMessage);
@@ -75,6 +80,9 @@ export class ChatComponent implements OnInit {
     privateMessage.message = currentMessage['Text'];
     privateMessage.dateSent = new Date(currentMessage['Time']);
     this.adapter.messages.push(privateMessage);
+    if(document.querySelectorAll('[title="' + currentMessage['From'] + '"]').length < 2) {
+      (document.querySelectorAll('[title="' + currentMessage['From'] + '"]')[0]  as HTMLElement).click();
+    }
   }
 
   receiveBroadcastMessage(currentMessage, event) {
@@ -93,16 +101,17 @@ export class ChatComponent implements OnInit {
   }
 
   addActiveUser(message) {
-    this.convertedActiveUsersList.push(
-      {
-        participantType: ChatParticipantType.User,
-        id: message['NewActiveUserId'],
-        displayName: message['NewActiveUserName'],
-        avatar: 'https://66.media.tumblr.com/avatar_9dd9bb497b75_128.pnj',
-        status: ChatParticipantStatus.Online
+    if(this.convertedActiveUsersList.filter(it => it.id == message['NewActiveUserId']).length == 0) {
+      this.convertedActiveUsersList.push(
+        {
+          participantType: ChatParticipantType.User,
+          id: message['NewActiveUserId'],
+          displayName: message['NewActiveUserName'],
+          avatar: 'https://66.media.tumblr.com/avatar_9dd9bb497b75_128.pnj',
+          status: ChatParticipantStatus.Online
         }
-    );
-    //this.activeUsers.push(activeUserId);
+      );
+    }
   }
 
   setUpActiveUsers(currentMessage) {
@@ -122,7 +131,9 @@ export class ChatComponent implements OnInit {
   }
 
   sendCommonMessage() {
-    alert(JSON.stringify({'token': localStorage.getItem(AuthorizationService.authTokenKey), 'from': +localStorage.getItem('userId'), 'to': this.broadcastId, 'text': this.message, 'time': new Date().getTime()}));
-    this.ws.send(JSON.stringify({'token': localStorage.getItem(AuthorizationService.authTokenKey), 'from': +localStorage.getItem('userId'), 'to': this.broadcastId, 'text': this.message, 'time': new Date().getTime()}));
+    if (this.message.length > 0) {
+      this.ws.send(JSON.stringify({'token': localStorage.getItem(AuthorizationService.authTokenKey), 'from': +localStorage.getItem('userId'), 'to': this.broadcastId, 'text': this.message, 'time': new Date().getTime()}));
+      this.message = '';
+    }
   }
 }

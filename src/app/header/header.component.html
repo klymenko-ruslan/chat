@@ -6,10 +6,13 @@
       <strong>Chat </strong> <br />
       application
     </div>
-    <div>
+    <div *ngIf="loggedIn()">
       <form class="hpform">
         <input type="submit" (click)="logout()" value="Logout" />
       </form>
+    </div>
+    <div>
+      Username: <strong>{{getUsername()}}</strong>
     </div>
   </div>
 

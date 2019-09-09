@@ -12,6 +12,14 @@ export class HeaderComponent implements OnInit {
   ngOnInit() {
   }
 
+  loggedIn() {
+    return localStorage.getItem(AuthorizationService.authTokenKey);
+  }
+
+  getUsername() {
+    return localStorage.getItem('username');
+  }
+
   logout() {
     this.authorizationService.logout();
   }
