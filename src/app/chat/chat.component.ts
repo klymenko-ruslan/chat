@@ -35,13 +35,29 @@ export class ChatComponent implements OnInit {
   ngOnInit() {
     this.initWebSocket();
   }
+
+  bytesToString(buf) {
+    return String.fromCharCode.apply(null, new Uint16Array(buf));
+  }
+
+  stringToBytes(str) {
+    const buf = new ArrayBuffer(str.length * 2);
+    const bufView = new Uint16Array(buf);
+    for (let i = 0, strLen = str.length; i < strLen; i++) {
+      bufView[i] = str.charCodeAt(i);
+    }
+    return buf;
+  }
+
   initWebSocket() {
     this.ws = new WebSocket(this.socketAddress);
 
     this.ws.onopen = () => {
-      this.ws.send(JSON.stringify({'Token': localStorage.getItem(AuthorizationService.authTokenKey), 'ConnectedUserId': +localStorage.getItem('userId')}));
+      const onOpenMessage = JSON.stringify({'Token': localStorage.getItem(AuthorizationService.authTokenKey), 'ConnectedUserId': +localStorage.getItem('userId')});
+      this.ws.send(this.stringToBytes(onOpenMessage));
       setInterval(() => {
-        this.ws.send(JSON.stringify({'HeartbeatUserId': +localStorage.getItem('userId')}));
+        const heartBeatMessage = JSON.stringify({'HeartbeatUserId': +localStorage.getItem('userId')});
+        this.ws.send(this.stringToBytes(heartBeatMessage));
       }, 2000);
     };
     this.ws.onmessage = (event) => {
@@ -140,7 +156,8 @@ export class ChatComponent implements OnInit {
 
   sendCommonMessage() {
     if (this.message.length > 0) {
-      this.ws.send(JSON.stringify({'token': localStorage.getItem(AuthorizationService.authTokenKey), 'from': +localStorage.getItem('userId'), 'to': this.broadcastId, 'text': this.message, 'time': new Date().getTime()}));
+      const messageText = JSON.stringify({'token': localStorage.getItem(AuthorizationService.authTokenKey), 'from': +localStorage.getItem('userId'), 'to': this.broadcastId, 'text': this.message, 'time': new Date().getTime()});
+      this.ws.send(this.stringToBytes(messageText));
       this.message = '';
     }
   }
