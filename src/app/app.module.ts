@@ -11,11 +11,12 @@ import {UtilsService} from './utils.service';
 import {NgChatModule} from 'ng-chat';
 import {HttpClientModule} from '@angular/common/http';
 import {EntityHttpService} from './http-service';
-import {AuthorizationService} from './AuthorizationService';
+import {AuthorizationService} from './authorization.service';
 import {SimpleNotificationsModule} from 'angular2-notifications';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
+import {ByteconverterService} from './byteconverter-service';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent},
@@ -42,7 +43,7 @@ const routes: Routes = [
     BrowserAnimationsModule
   ],
   exports: [RouterModule],
-  providers: [UtilsService, EntityHttpService, AuthorizationService],
+  providers: [UtilsService, EntityHttpService, AuthorizationService, ByteconverterService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

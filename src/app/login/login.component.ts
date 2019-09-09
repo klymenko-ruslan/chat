@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {EntityHttpService} from '../http-service';
-import {AuthorizationService} from '../AuthorizationService';
+import {AuthorizationService} from '../authorization.service';
 import {NotificationsService} from 'angular2-notifications';
 
 @Component({

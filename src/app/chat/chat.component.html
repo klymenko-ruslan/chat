@@ -5,6 +5,9 @@
   </form>
 </div>
 <div>
+  Username: <strong>{{getUsername()}}</strong>
+</div>
+<div>
   <input (keyup.enter)="sendCommonMessage()" [(ngModel)]="message" />
   <button (click)="sendCommonMessage()">Send message</button>
 </div>

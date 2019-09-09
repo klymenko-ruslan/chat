@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {EntityHttpService} from '../http-service';
-import {AuthorizationService} from '../AuthorizationService';
+import {AuthorizationService} from '../authorization.service';
 import {Router} from '@angular/router';
+import {NotificationsService} from 'angular2-notifications';
 
 @Component({
   selector: 'app-registration',
@@ -15,7 +16,8 @@ export class RegistrationComponent implements OnInit {
 
   constructor(private entityHttpService: EntityHttpService,
               private authorizationService: AuthorizationService,
-              private router: Router) { }
+              private router: Router,
+              private notificationService: NotificationsService) { }
 
   ngOnInit() {
   }
@@ -25,7 +27,10 @@ export class RegistrationComponent implements OnInit {
     this.entityHttpService.register({'username': this.username, 'password': this.password, 'isMale': this.isMale}).subscribe(response => {
       if (response['Token']) {
         this.router.navigate(['/login']);
-        //this.authorizationService.login(response['Token'], this.username, response['UserId']);
+      }
+    }, err => {
+      if (err.status === 500) {
+        this.notificationService.error('Error', 'User wasn\'t created. Please try another username.');
       }
     });
   }

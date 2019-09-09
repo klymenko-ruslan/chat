@@ -1,6 +1,6 @@
-import {ChatAdapter, ChatParticipantStatus, ChatParticipantType, IChatParticipant, Message, ParticipantResponse} from 'ng-chat';
+import {ChatAdapter, IChatParticipant, Message, ParticipantResponse} from 'ng-chat';
 import {Observable, of} from 'rxjs';
-import {AuthorizationService} from '../AuthorizationService';
+import {AuthorizationService} from '../authorization.service';
 
 export class MyAdapter extends ChatAdapter {
 

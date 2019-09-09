@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {AuthorizationService} from '../AuthorizationService';
+import {AuthorizationService} from '../authorization.service';
 
 @Component({
   selector: 'app-header',
@@ -14,10 +14,6 @@ export class HeaderComponent implements OnInit {
 
   loggedIn() {
     return localStorage.getItem(AuthorizationService.authTokenKey);
-  }
-
-  getUsername() {
-    return localStorage.getItem('username');
   }
 
   logout() {
