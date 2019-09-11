@@ -9,6 +9,8 @@ import {NotificationsService} from 'angular2-notifications';
 })
 export class LoginComponent implements OnInit {
 
+  public loading = false;
+
   username = '';
   password = '';
 
@@ -20,13 +22,15 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
+    this.loading = true;
     this.entityHttpService.login({'username': this.username, 'password': this.password}).subscribe(response => {
       if (response) {
         this.authorizationService.login(response['Token'], this.username, response['UserId']);
       } else {
         this.notificationService.error('Authorization failed', 'Wrong username/password pair');
       }
-    });
+      this.loading = false;
+    }, () => this.loading = false);
   }
 
 }

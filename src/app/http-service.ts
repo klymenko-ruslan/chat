@@ -4,22 +4,24 @@ import {HttpClient} from '@angular/common/http';
 @Injectable()
 export class EntityHttpService {
 
-  BASE_URL: string
+  static SERVICE_ADDRESS = '178.151.5.66'
+  static SERVICE_PORT = '8095'
+  static BASE_URL: string
 
   constructor(private http: HttpClient) {
-    this.BASE_URL = 'http://localhost:8095/';
+    EntityHttpService.BASE_URL = 'http://' + EntityHttpService.SERVICE_ADDRESS + ':' + EntityHttpService.SERVICE_PORT + '/';
   }
 
   getBroadcastMessages(body) {
-    return this.http.post(this.BASE_URL + 'd', body);
+    return this.http.post(EntityHttpService.BASE_URL + 'd', body);
   }
 
   register(body) {
-    return this.http.post(this.BASE_URL + 'register', body);
+    return this.http.post(EntityHttpService.BASE_URL + 'register', body);
   }
 
   login(body) {
-    return this.http.post(this.BASE_URL + 'login', body);
+    return this.http.post(EntityHttpService.BASE_URL + 'login', body);
   }
 
 }

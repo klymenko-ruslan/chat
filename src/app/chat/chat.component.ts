@@ -3,6 +3,7 @@ import {MyAdapter} from './chat.adaper';
 import {AuthorizationService} from '../authorization.service';
 import {ChatParticipantStatus, ChatParticipantType, Message} from 'ng-chat';
 import {ByteconverterService} from '../byteconverter-service';
+import {EntityHttpService} from '../http-service';
 
 @Component({
   selector: 'app-chat',
@@ -12,7 +13,7 @@ export class ChatComponent implements OnInit {
 
   loaded = false
 
-  socketAddress = 'ws://localhost:8095/socket-channel'
+  socketAddress = 'ws://' + EntityHttpService.SERVICE_ADDRESS + ':' + EntityHttpService.SERVICE_PORT + '/socket-channel'
 
   message = ''
 

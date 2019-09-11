@@ -17,6 +17,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import {ByteconverterService} from './byteconverter-service';
+import {NgxLoadingModule} from 'ngx-loading';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent},
@@ -40,7 +41,8 @@ const routes: Routes = [
     NgChatModule,
     HttpClientModule,
     SimpleNotificationsModule.forRoot({timeOut: 4000, showProgressBar: true}),
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    NgxLoadingModule.forRoot({})
   ],
   exports: [RouterModule],
   providers: [UtilsService, EntityHttpService, AuthorizationService, ByteconverterService],

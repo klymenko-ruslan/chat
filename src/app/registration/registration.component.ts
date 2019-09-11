@@ -10,6 +10,8 @@ import {NotificationsService} from 'angular2-notifications';
 })
 export class RegistrationComponent implements OnInit {
 
+  public loading = false;
+
   username = '';
   password = '';
   isMale = true;
@@ -24,13 +26,17 @@ export class RegistrationComponent implements OnInit {
 
 
   register() {
+    this.loading = true;
     this.entityHttpService.register({'username': this.username, 'password': this.password, 'isMale': this.isMale}).subscribe(response => {
       if (response['Token']) {
         this.router.navigate(['/login']);
+        this.notificationService.create('Registration completed', 'User was succesfully created.');
       }
+      this.loading = false;
     }, err => {
       if (err.status === 500) {
         this.notificationService.error('Error', 'User wasn\'t created. Please try another username.');
+        this.loading = false;
       }
     });
   }

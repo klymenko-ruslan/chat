@@ -4,6 +4,7 @@ import {AuthorizationService} from '../authorization.service';
 
 export class MyAdapter extends ChatAdapter {
 
+  private fullMessages = {};
   public messages = [];
 
   constructor(private ws: WebSocket, public activeUsers: IChatParticipant[]) {
